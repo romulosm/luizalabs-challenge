@@ -1,0 +1,4 @@
+export enum CodeErrors {
+  UNAUTHORIZED = 'UNAUTHORIZED',
+  INVALID_TOKEN = 'INVALID_TOKEN',
+}
