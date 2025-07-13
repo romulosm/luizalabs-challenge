@@ -1,9 +1,5 @@
-import { ISpotifyProfile } from './spotify-profile.interface';
+import { User } from 'src/user/schemas/user.schema';
 
 export interface IAuthenticatedRequest extends Request {
-  user: {
-    accessToken: string;
-    refreshToken: string;
-    profile: ISpotifyProfile;
-  };
+  user: User;
 }
