@@ -3,14 +3,18 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-spotify';
 import { ConfigService } from 'src/config/config.service';
 import { ISpotifyProfile } from '../interfaces/spotify-profile.interface';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class SpotifyStrategy extends PassportStrategy(Strategy, 'spotify') {
-  constructor(configService: ConfigService) {
+  constructor(
+    configService: ConfigService,
+    private readonly userService: UserService,
+  ) {
     const clientID = configService.envConfig.spotifyClientId;
     const clientSecret = configService.envConfig.spotifyClientSecret;
     const callbackURL = configService.envConfig.spotifyRedirectUri;
-    const oauthUrl = configService.envConfig.spotifyOauthUrl;
+    const oauthUrl = configService.envConfig.spotifyApiBaseUrl + '/me';
 
     if (!clientID || !clientSecret || !callbackURL) {
       throw new Error('Spotify configuration values are missing in .env');
@@ -63,15 +67,17 @@ export class SpotifyStrategy extends PassportStrategy(Strategy, 'spotify') {
     };
   }
 
-  validate(
+  async validate(
     accessToken: string,
     refreshToken: string,
     profile: ISpotifyProfile,
   ) {
-    return {
+    const user = await this.userService.findOrCreateFromSpotify(
+      profile,
       accessToken,
       refreshToken,
-      profile,
-    };
+    );
+
+    return user;
   }
 }
