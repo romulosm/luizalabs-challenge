@@ -27,7 +27,17 @@ export class ConfigEnv {
 
   @IsString()
   @IsUrl({ require_tld: false })
-  spotifyOauthUrl: string;
+  spotifyApiBaseUrl: string;
+
+  @IsString()
+  @IsUrl({ require_tld: false })
+  spotifyAccountsUrl: string;
+
+  @IsString()
+  jwtSecret: string;
+
+  @IsString()
+  mongoUri: string;
 
   get isProduction(): boolean {
     return this.nodeEnv === NodeEnv.Production;

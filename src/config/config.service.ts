@@ -32,7 +32,10 @@ export class ConfigService implements OnModuleInit {
     envConfig.spotifyClientId = config.SPOTIFY_CLIENT_ID as string;
     envConfig.spotifyClientSecret = config.SPOTIFY_CLIENT_SECRET as string;
     envConfig.spotifyRedirectUri = config.SPOTIFY_REDIRECT_URI as string;
-    envConfig.spotifyOauthUrl = config.SPOTIFY_OAUTH_URL as string;
+    envConfig.spotifyApiBaseUrl = config.SPOTIFY_API_BASE_URL as string;
+    envConfig.spotifyAccountsUrl = config.SPOTIFY_ACCOUNTS_URL as string;
+    envConfig.jwtSecret = config.JWT_SECRET as string;
+    envConfig.mongoUri = config.MONGODB_URI as string;
 
     return envConfig;
   }
