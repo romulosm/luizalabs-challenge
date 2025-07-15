@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { ISpotifyTopArtistsResponse } from './interfaces/spotify-top-artists.interface';
 import { ISpotifyArtistAlbumsResponse } from './interfaces/spotify-artists-albums.interface';
 import { ISpotifyCreatePlaylistResponse } from './interfaces/spotify-create-playlist.interface';
+import { ISpotifyPlaylistResponse } from './interfaces/spotify-playlists.interface';
 
 @Injectable()
 export class SpotifyApiService {
@@ -46,7 +47,7 @@ export class SpotifyApiService {
     user: User,
     limit = 10,
     offset = 0,
-  ): Promise<ISpotifyTopArtistsResponse> {
+  ): Promise<ISpotifyPlaylistResponse> {
     const apiBaseUrl = this.configService.envConfig.spotifyApiBaseUrl;
     return this._getFromSpotify(user, `${apiBaseUrl}/me/playlists`, {
       limit,

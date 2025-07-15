@@ -36,6 +36,7 @@ export class ConfigService implements OnModuleInit {
     envConfig.spotifyAccountsUrl = config.SPOTIFY_ACCOUNTS_URL as string;
     envConfig.jwtSecret = config.JWT_SECRET as string;
     envConfig.mongoUri = config.MONGODB_URI as string;
+    envConfig.frontendUrl = config.FRONTEND_URL as string;
 
     return envConfig;
   }

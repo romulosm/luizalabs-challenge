@@ -20,7 +20,7 @@ export interface ISpotifyPlaylistTracks {
   total: number;
 }
 
-export interface ISpotifyPlaylist {
+export interface ISpotifyPlaylistResponse {
   collaborative: boolean;
   description: string;
   external_urls: {

@@ -45,4 +45,8 @@ export class UserService {
   async updateUserTokens(userId: string, tokens: Partial<User>) {
     return await this.userRepository.update(userId, tokens);
   }
+
+  async deleteUser(userId: string): Promise<User | null> {
+    return await this.userRepository.delete(userId);
+  }
 }

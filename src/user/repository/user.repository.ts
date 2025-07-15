@@ -28,4 +28,8 @@ export class UserRepository {
       .findByIdAndUpdate(userId, updateData, { new: true })
       .exec();
   }
+
+  async delete(userId: string): Promise<User | null> {
+    return await this.userModel.findByIdAndDelete(userId).exec();
+  }
 }

@@ -1,4 +1,5 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { ConfigService } from 'src/config/config.service';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { IAuthenticatedRequest } from './interfaces/authenticate-request';
@@ -8,7 +9,10 @@ import { UserProfileDto } from './dto/user-profile.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
@@ -27,31 +31,28 @@ export class AuthController {
   @UseGuards(AuthGuard('spotify'))
   login() {}
 
-  @Get('logout')
-  logout(@Res() res: Response) {
-    res.clearCookie('jwt', {
-      httpOnly: true,
-      secure: false, // true em produção com HTTPS
-    });
-    return res.send({ message: 'Logout successful' });
+  @Post('logout')
+  async logout(@Req() req) {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      throw new Error('Authorization token not provided in header');
+    }
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(
+      Buffer.from(payload, 'base64').toString('utf-8'),
+    );
+    if (!decoded || !decoded.sub) {
+      throw new Error('Invalid token or payload missing "sub" field');
+    }
+    return await this.authService.logout(decoded.sub);
   }
 
   @Get('callback')
   @UseGuards(AuthGuard('spotify'))
   callback(@Req() req: IAuthenticatedRequest, @Res() res: Response) {
     const user = req.user;
-
-    // Gera JWT
     const token = this.authService.generateJwt(user);
-
-    // Configura cookie
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: false, // true em produção com HTTPS
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
-    });
-
-    // Redireciona para o frontend
-    return res.send(`<h1>Login successful! Check logs.</h1>`);
+    const frontendUrl = `${this.configService.envConfig.frontendUrl}/auth-success?token=${token}`;
+    return res.redirect(frontendUrl);
   }
 }

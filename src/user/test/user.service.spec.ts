@@ -12,6 +12,7 @@ describe('UserService', () => {
     create: jest.Mock;
     update: jest.Mock;
     findById: jest.Mock;
+    delete: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -20,6 +21,7 @@ describe('UserService', () => {
       create: jest.fn(),
       update: jest.fn(),
       findById: jest.fn(),
+      delete: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -187,6 +189,20 @@ describe('UserService', () => {
 
       expect(repository.update).toHaveBeenCalledWith(userId, tokens);
       expect(result).toEqual(updatedUser);
+    });
+  });
+
+  describe('deleteUser', () => {
+    it('should delete user and return deleted user', async () => {
+      const userId = chance.guid();
+      const deletedUser = { _id: userId };
+
+      repository.delete = jest.fn().mockResolvedValue(deletedUser);
+
+      const result = await service.deleteUser(userId);
+
+      expect(repository.delete).toHaveBeenCalledWith(userId);
+      expect(result).toEqual(deletedUser);
     });
   });
 });

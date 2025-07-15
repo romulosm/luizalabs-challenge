@@ -11,15 +11,15 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 @Module({
   imports: [
     ConfigModule,
+    UserModule,
     JwtModule.registerAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, UserModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.envConfig.jwtSecret,
         signOptions: { expiresIn: '7d' },
       }),
     }),
-    UserModule,
   ],
   controllers: [AuthController],
   providers: [SpotifyStrategy, JwtStrategy, AuthService],
