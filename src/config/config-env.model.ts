@@ -39,6 +39,10 @@ export class ConfigEnv {
   @IsString()
   mongoUri: string;
 
+  @IsString()
+  @IsUrl({ require_tld: false })
+  frontendUrl: string;
+
   get isProduction(): boolean {
     return this.nodeEnv === NodeEnv.Production;
   }

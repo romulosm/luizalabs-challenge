@@ -31,6 +31,7 @@ export class SpotifyStrategy extends PassportStrategy(Strategy, 'spotify') {
         'playlist-modify-private',
         'user-top-read',
       ],
+      showDialog: true,
     });
 
     (this as any)._oauth2.useAuthorizationHeaderforGET(true);

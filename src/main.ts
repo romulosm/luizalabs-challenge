@@ -31,6 +31,10 @@ async function bootstrap() {
   app.use(passport.session());
   app.use(cookieParser());
   app.setGlobalPrefix('v1');
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  });
 
   passport.serializeUser((user: any, done) => {
     done(null, user);

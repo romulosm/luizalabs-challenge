@@ -18,6 +18,7 @@ describe('ConfigService', () => {
     process.env.SPOTIFY_ACCOUNTS_URL = 'https://accounts.spotify.com/api/token';
     process.env.JWT_SECRET = 'jwt-secret';
     process.env.MONGODB_URI = 'mongodb://localhost:27017/testdb';
+    process.env.FRONTEND_URL = 'http://localhost:3000';
   });
 
   afterEach(() => {
