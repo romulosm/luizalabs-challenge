@@ -1,98 +1,303 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🎵 Artista Front Spotify — Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este projeto é o backend do **Artista Front Spotify**, uma plataforma que integra com a API do Spotify para gerenciar usuários, artistas favoritos, playlists e muito mais. Foi desenvolvido com **NestJS**, seguindo boas práticas de arquitetura escalável e modular.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🚀 Tecnologias utilizadas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS** — Framework progressivo para Node.js, ideal para construir aplicações escaláveis, seguras e testáveis.
+- **TypeScript** — Tipagem estática para maior segurança e produtividade.
+- **MongoDB** — Banco de dados NoSQL, flexível e rápido.
+- **JWT (JSON Web Tokens)** — Para autenticação segura e moderna.
+- **Spotify API** — Integração completa com a conta do usuário.
 
-## Project setup
+---
 
-```bash
-$ npm install
+## 💡 Por que NestJS?
+
+Escolhemos o **NestJS** por:
+
+- Arquitetura baseada em módulos e injeção de dependências.
+- Estrutura pronta para testes unitários e integração.
+- Suporte nativo a TypeScript.
+- Flexibilidade para integração com diferentes bancos e provedores.
+
+---
+
+## 🔐 Autenticação com Spotify
+
+A autenticação usa OAuth 2.0 com a API do Spotify, garantindo uma experiência segura e moderna para o usuário.
+
+### 💬 Por que salvar os tokens?
+
+Após o login, o Spotify retorna dois tokens:
+
+- **Access token**: usado para acessar recursos protegidos (por exemplo, playlists e artistas). Ele tem duração curta (em geral, 1 hora).
+- **Refresh token**: usado para gerar novos access tokens sem precisar solicitar novo login ao usuário.
+
+Salvamos esses tokens no banco de dados vinculados ao usuário para:
+
+- Permitir acesso contínuo aos dados do Spotify mesmo após expirar o access token.
+- Evitar forçar o usuário a logar novamente sempre que o token expira.
+- Suportar atualizações automáticas e operações em background (por exemplo, sincronizar playlists ou artistas salvos).
+
+---
+
+### 🔁 Refresh automático
+
+Quando o **access token** expira, o backend usa o **refresh token** para solicitar ao Spotify um novo access token de forma transparente para o usuário.  
+Esse processo garante uma sessão fluida e contínua, sem necessidade de interação extra.
+
+---
+
+### 🔒 Uso do JWT
+
+Após finalizar a autenticação com o Spotify, o backend emite um **JWT** próprio contendo:
+
+- O identificador interno do usuário (`sub`)
+- O `spotifyId`
+- Outros claims úteis
+
+Esse JWT é utilizado em todas as rotas protegidas do backend (por exemplo, `/me`, `/playlists`, etc.).  
+Assim, o frontend consegue autenticar cada requisição de forma segura, sem expor diretamente os tokens do Spotify.
+
+---
+
+### ✅ Fluxo resumido
+
+1️⃣ O usuário clica em **Login com Spotify** no frontend.  
+2️⃣ É redirecionado para a página de autorização do Spotify.  
+3️⃣ Após consentimento, o Spotify retorna **access token** e **refresh token**.  
+4️⃣ O backend salva os tokens e emite um **JWT** próprio para o frontend.  
+5️⃣ O frontend usa o JWT para acessar rotas autenticadas.  
+6️⃣ O backend renova automaticamente o access token quando necessário usando o refresh token.
+
+---
+
+## 🗂️ Estrutura de pastas
+
+```plaintext
+src/
+├── auth/
+│   ├── dto/
+│   ├── guards/
+│   ├── interfaces/
+│   ├── strategies/
+│   ├── test/
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   └── auth.module.ts
+│   ├── auth.controller.ts
+│   ├── auth.module.ts
+│   └── auth.service.ts
+│
+├── config/
+│   ├── test/
+│   │   └── config.service.spec.ts
+│   ├── config-env.model.ts
+│   ├── config.module.ts
+│   └── config.service.ts
+│
+├── shared/
+│   ├── code-errors.enum.ts
+│   ├── coded-validation.pipe.ts
+│   ├── coded.exception.ts
+│   └── http-exception.filter.ts
+│
+├── spotify-api/
+│   ├── interfaces/
+│   ├── test/
+│   ├── spotify-api.controller.ts
+│   ├── spotify-api.module.ts
+│   └── spotify-api.service.ts
+│
+├── user/
+│   ├── repository/
+│   │   └── user.repository.ts
+│   ├── schemas/
+│   │   └── user.schema.ts
+│   ├── test/
+│   │   ├── user.service.spec.ts
+│   │   ├── user.module.ts
+│   │   ├── user.service.ts
+│   │   ├── app.controller.spec.ts
+│   │   ├── app.module.ts
+│   │   └── app.service.ts
+│   ├── user.module.ts
+│   ├── user.service.ts
+│   └── app.controller.ts
+│
+├── app.module.ts
+├── app.service.ts
+└── main.ts
 ```
 
-## Compile and run the project
+---
+
+## ⚙️ Como instalar
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/romulosm/luizalabs-challenge
+cd luizalabs-challenge
+npm install
 ```
 
-## Run tests
+---
+
+## 🧪 Rodar testes
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run test
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Para ver cobertura de testes:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run test:cov
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 💻 Rodar o projeto localmente
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+npm run start:dev
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+O servidor vai iniciar em `http://localhost:3000` (ou porta definida no `.env`).
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 🛠️ Variáveis de ambiente
 
-## Stay in touch
+Copie o arquivo exemplo:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+cp .env.sample .env
+```
 
-## License
+Edite as variáveis conforme necessário:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```env
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_REDIRECT_URI=http://your-app-url.com/auth/callback
+SPOTIFY_API_BASE_URL=https://api.spotify.com/v1
+SPOTIFY_ACCOUNTS_URL=https://accounts.spotify.com/api/token
+SESSION_SECRET=your_session_secret
+FRONTEND_URL=http://localhost:5173
+JWT_SECRET=your_jwt_secret
+MONGODB_URI=mongodb://user:password@db:27017/your-database?authSource=admin
+NODE_ENV=development
+HTTP_PORT=3000
+```
+
+---
+
+## 🐳 Docker
+
+### 📄 Dockerfile
+
+```dockerfile
+# Usa imagem oficial do Node
+FROM node:20
+
+# Define diretório de trabalho
+WORKDIR /app
+
+# Copia package.json e package-lock.json
+COPY package*.json ./
+
+# Instala dependências
+RUN npm install
+
+# Copia todo o restante do projeto
+COPY . .
+
+# Compila a aplicação
+RUN npm run build
+
+# Expõe a porta
+EXPOSE 3000
+
+# Comando para iniciar
+CMD ["npm", "run", "start:prod"]
+```
+
+---
+
+### ⚙️ docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:6
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+```
+
+---
+
+### 🚀 Rodar com Docker
+
+```bash
+docker-compose up --build
+```
+
+A aplicação ficará disponível em `http://localhost:3000` e o MongoDB em `mongodb://localhost:27017`.
+
+---
+
+## ✅ Funcionalidades principais
+
+- Login e logout usando Spotify
+- Registro automático ou atualização do usuário no primeiro login
+- Emissão de JWT para sessões autenticadas
+- Gerenciamento de tokens de acesso e refresh
+- Exclusão de conta (rota de logout e exclusão completa)
+
+---
+
+## 🏗️ Arquitetura
+
+O projeto segue arquitetura **modular**, facilitando manutenção, testes e escalabilidade. Cada domínio (auth, user, spotify-api) possui seu próprio módulo, service, controller e schemas.
+
+Utilizamos **repository pattern** para isolar o acesso ao banco de dados.
+
+---
+
+## 🤝 Contribuições
+
+Sinta-se à vontade para abrir **issues**, enviar **pull requests** ou sugerir melhorias!
+
+---
+
+## 📄 Licença
+
+MIT
+
+---
+
+## 🌟 Agradecimentos
+
+Obrigado por explorar este projeto!  
+Feito com 💙 e muito café.
+
+---
