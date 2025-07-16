@@ -37,6 +37,8 @@ jobs:
           environment_name: luizalabs-challenge-backend-lb-e-env
           region: us-east-1
           version_label: ${{ github.sha }}
-          version_description: 'Deploy automático via GitHub Actions'
+          version_description: Deploy automático via GitHub Actions
           deployment_package: deploy.zip
-          wait_for_environment_recovery: false
+          wait_for_deployment: true
+          wait_for_environment_recovery: true
+          recovery_wait_time: 30
