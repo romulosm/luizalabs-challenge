@@ -26,15 +26,15 @@ jobs:
         run: npm run build
 
       - name: Generate ZIP file
-        run: zip -r deploy.zip . -x "node_modules/*" ".git/*"
+        run: zip -r deploy.zip . -x "node_modules/*" ".git/*" ".github/*"
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: spotify-test-app
-          environment_name: spotify-test-app-env
+          application_name: desafio-luizalabs
+          environment_name: Desafio-luizalabs-env
           region: us-east-1
           version_label: ${{ github.sha }}
           version_description: Deploy automático via GitHub Actions
