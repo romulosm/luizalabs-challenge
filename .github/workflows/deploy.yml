@@ -33,7 +33,7 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: luizalabs-challenge-backend
+          application_name: luizalabs-challenge-backend-lb-e-env
           environment_name: luizalabs-challenge-backend-lb-e-env
           region: us-east-1
           version_label: ${{ github.sha }}
