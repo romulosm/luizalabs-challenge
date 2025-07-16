@@ -33,12 +33,11 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: luizalabs-challenge-backend-lb-e-env
-          environment_name: luizalabs-challenge-backend-lb-e-env
+          application_name: spotify-test-app
+          environment_name: spotify-test-app-env
           region: us-east-1
           version_label: ${{ github.sha }}
           version_description: Deploy automático via GitHub Actions
           deployment_package: deploy.zip
           wait_for_deployment: true
-          wait_for_environment_recovery: true
           use_existing_version_if_available: true
