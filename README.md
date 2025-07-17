@@ -14,6 +14,29 @@ Este projeto é o backend do **Artista Front Spotify**, uma plataforma que integ
 
 ---
 
+## 🛠️ Instruções para Avaliação
+
+### 🔐 Acesso ao Sandbox do Spotify
+
+Este projeto utiliza a [Web API do Spotify](https://developer.spotify.com/documentation/web-api), que impõe restrições de uso para ambientes de desenvolvimento.
+
+Para permitir o uso completo da aplicação, **é necessário que seu e-mail ou número de WhatsApp seja adicionado como usuário autorizado** no aplicativo de desenvolvedor do Spotify.
+
+**📨 Envie sua solicitação de acesso para:**
+
+- **E-mail:** romulo.machado@live.com
+- **WhatsApp:** (51) 99911-0718
+
+Essa etapa é necessária devido à política de [quota modes da API](https://developer.spotify.com/documentation/web-api/concepts/quota-modes), que limita o uso de recursos como `/me`, `/top/artists` e `/playlists` apenas para usuários previamente autorizados.
+
+### 🌐 Callback do Spotify (Redirect URI)
+
+A URL de callback (redirect URI) configurada no app do Spotify **precisa obrigatoriamente ser uma URL HTTPS**. Essa exigência é do próprio Spotify e impede o uso de callbacks com `localhost` sem HTTPS, mesmo em ambiente de desenvolvimento.
+
+Se você quiser executar a aplicação localmente e testar a autenticação, será necessário utilizar um túnel HTTPS como o [ngrok](https://ngrok.com/) ou outra alternativa.
+
+---
+
 ## 💡 Por que NestJS?
 
 Escolhemos o **NestJS** por:
